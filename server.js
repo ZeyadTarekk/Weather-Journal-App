@@ -20,6 +20,6 @@ app.use(express.static("website"));
 
 // Setup Server
 const printPort = () => {
-  console.log(`Server Running at localhost:${port}`);
+  console.log(`Server Running at localhost: ${port}`);
 };
 app.listen(port, printPort);
