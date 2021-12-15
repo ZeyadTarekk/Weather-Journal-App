@@ -12,32 +12,37 @@ const tempElement = document.querySelector("#temp");
 const contentElement = document.querySelector("#content");
 
 const dealWithTheServer = async function () {
-  const zipCode = zipElement.value;
-  const feelings = feelingsElement.value;
-  if (zipCode !== "") {
-    const apiFullURL = `https://api.openweathermap.org/data/2.5/weather?zip=${zipCode},us&appid=${apiKey}&units=metric`;
-    const firstPromise = await fetch(apiFullURL);
-    const data = await firstPromise.json();
-    const tempreture = data.main.temp;
+  try {
+    const zipCode = zipElement.value;
+    const feelings = feelingsElement.value;
+    if (zipCode !== "") {
+      const apiFullURL = `https://api.openweathermap.org/data/2.5/weather?zip=${zipCode},us&appid=${apiKey}&units=metric`;
 
-    await fetch("/dataFromApp", {
-      method: "POST",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        date: newDate,
-        temp: tempreture,
-        feeling: feelings,
-      }),
-    });
+      const firstPromise = await fetch(apiFullURL);
+      if (!firstPromise.ok) throw new Error("Can't Find this Country");
+      const data = await firstPromise.json();
+      const tempreture = data.main.temp;
 
-    const secondPromise = await fetch("/dataToApp");
-    const data2 = await secondPromise.json();
-    dateElement.innerHTML = data2.date;
-    tempElement.innerHTML = data2.temp + "&#176;C";
-    contentElement.innerHTML = data2.feeling;
+      await fetch("/dataFromApp", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          date: newDate,
+          temp: tempreture,
+          feeling: feelings,
+        }),
+      });
+      const secondPromise = await fetch("/dataToApp");
+      const data2 = await secondPromise.json();
+      dateElement.innerHTML = data2.date;
+      tempElement.innerHTML = data2.temp + "&#176;C";
+      contentElement.innerHTML = data2.feeling;
+    }
+  } catch (err) {
+    console.log(err.message);
   }
 };
 
