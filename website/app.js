@@ -19,7 +19,8 @@ const dealWithTheServer = async function () {
       const apiFullURL = `https://api.openweathermap.org/data/2.5/weather?zip=${zipCode},us&appid=${apiKey}&units=metric`;
 
       const firstPromise = await fetch(apiFullURL);
-      if (!firstPromise.ok) throw new Error("Can't Find this Country");
+      if (!firstPromise.ok)
+        throw new Error("Can't Find this Country.. Try Again!");
       const data = await firstPromise.json();
       const tempreture = data.main.temp;
 
@@ -43,6 +44,7 @@ const dealWithTheServer = async function () {
     }
   } catch (err) {
     console.log(err.message);
+    contentElement.innerHTML = err.message;
   }
 };
 
